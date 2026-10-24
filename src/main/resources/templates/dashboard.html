@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevSuite | Infrastructure Console</title>
+    <!-- Tailwind CSS for Professional Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Custom scrollbar for terminal/lists */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #1f2937; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 font-sans min-h-screen">
+
+<!-- Top Navigation -->
+<nav class="bg-slate-800 border-b border-slate-700 px-6 py-4 shadow-lg flex justify-between items-center">
+    <div class="flex items-center space-x-3">
+        <i class="fas fa-cube text-blue-500 text-2xl"></i>
+        <h1 class="text-xl font-bold tracking-wide text-white">Local DevSuite</h1>
+    </div>
+    <div class="flex items-center space-x-2 text-sm text-emerald-400 bg-emerald-400/10 px-3 py-1 rounded-full border border-emerald-400/20">
+        <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+        <span>All Services Running</span>
+    </div>
+</nav>
+
+<div class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- LEFT COLUMN: DB & Redis -->
+    <div class="space-y-6 lg:col-span-1">
+
+        <!-- PostgreSQL Card -->
+        <div class="bg-slate-800 rounded-xl shadow-xl border border-slate-700 p-5">
+            <div class="flex items-center space-x-3 mb-4 border-b border-slate-700 pb-3">
+                <i class="fas fa-database text-blue-400 text-xl"></i>
+                <h2 class="text-lg font-semibold text-white">PostgreSQL</h2>
+                <span class="ml-auto text-xs font-mono text-slate-400 bg-slate-900 px-2 py-1 rounded">Port 5432</span>
+            </div>
+
+            <!-- Connection Details Panel -->
+            <div class="bg-slate-900 rounded-lg p-4 mb-5 border border-slate-700 shadow-inner">
+                <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Connection Details</h3>
+
+                <div class="space-y-3">
+                    <!-- URL -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-slate-500">JDBC URL</span>
+                            <button onclick="copyToClipboard('jdbc:postgresql://localhost:5432/postgres', this)" class="text-slate-400 hover:text-white transition" title="Copy URL"><i class="far fa-copy"></i></button>
+                        </div>
+                        <div class="font-mono text-xs text-blue-300 truncate bg-[#0D1117] p-1.5 rounded border border-slate-800">jdbc:postgresql://localhost:5432/postgres</div>
+                    </div>
+
+                    <!-- Driver -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-slate-500">Driver Class</span>
+                            <button onclick="copyToClipboard('org.postgresql.Driver', this)" class="text-slate-400 hover:text-white transition" title="Copy Driver"><i class="far fa-copy"></i></button>
+                        </div>
+                        <div class="font-mono text-xs text-blue-300 truncate bg-[#0D1117] p-1.5 rounded border border-slate-800">org.postgresql.Driver</div>
+                    </div>
+
+                    <!-- User & Pass Grid -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs text-slate-500">Username</span>
+                                <button onclick="copyToClipboard('postgres', this)" class="text-slate-400 hover:text-white transition" title="Copy Username"><i class="far fa-copy"></i></button>
+                            </div>
+                            <div class="font-mono text-xs text-blue-300 bg-[#0D1117] p-1.5 rounded border border-slate-800">postgres</div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs text-slate-500">Password</span>
+                                <button onclick="copyToClipboard('', this)" class="text-slate-400 hover:text-white transition" title="Copy Password"><i class="far fa-copy"></i></button>
+                            </div>
+                            <div class="font-mono text-xs text-slate-500 italic bg-[#0D1117] p-1.5 rounded border border-slate-800">(blank)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Magic One-Click Login Form -->
+            <form action="http://localhost:8082/login.do" method="post" target="_blank">
+                <input type="hidden" name="driver" value="org.postgresql.Driver">
+                <input type="hidden" name="url" value="jdbc:postgresql://localhost:5432/postgres">
+                <input type="hidden" name="user" value="postgres">
+                <input type="hidden" name="password" value="">
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 px-4 rounded-lg transition-colors flex justify-center items-center space-x-2 shadow-lg shadow-blue-500/20">
+                    <span>Open Database UI</span>
+                    <i class="fas fa-external-link-alt text-sm"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Redis Card -->
+        <div class="bg-slate-800 rounded-xl shadow-xl border border-slate-700 p-5">
+            <div class="flex items-center space-x-3 mb-4 border-b border-slate-700 pb-3">
+                <i class="fas fa-layer-group text-red-500 text-xl"></i>
+                <h2 class="text-lg font-semibold text-white">Redis Cache</h2>
+                <span class="ml-auto text-xs font-mono text-slate-400 bg-slate-900 px-2 py-1 rounded">Port 6379</span>
+            </div>
+
+            <div class="flex justify-between items-center mb-3">
+                <span class="text-sm text-slate-400">Current Keys in Memory:</span>
+                <span class="text-xs bg-slate-700 px-2 py-0.5 rounded-full" th:text="${#lists.size(redisKeys)}">0</span>
+            </div>
+
+            <!-- Search Bar for Redis Keys -->
+            <div class="mb-3 relative">
+                <input type="text" id="redisSearch" onkeyup="filterRedisKeys()" placeholder="Search keys..." class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded p-2 pl-7 focus:ring-blue-500 focus:border-blue-500">
+                <i class="fas fa-search absolute left-2.5 top-2.5 text-slate-500 text-xs"></i>
+            </div>
+
+            <div class="bg-slate-900 rounded-lg p-3 max-h-48 overflow-y-auto border border-slate-700 font-mono text-sm shadow-inner">
+                <ul class="space-y-2" id="redisKeysList">
+                    <li th:each="key : ${redisKeys}" class="redis-key-item flex justify-between items-start border-b border-slate-800/50 pb-2">
+                        <div class="flex items-start overflow-hidden pr-2 w-full">
+                            <span class="text-slate-500 mr-2 mt-0.5">>_</span>
+                            <!-- break-all ensures massive strings wrap correctly without overflowing -->
+                            <span class="text-emerald-400 break-all redis-key-text" th:text="${key}"></span>
+                        </div>
+                        <button type="button" class="text-slate-500 hover:text-white transition flex-shrink-0 mt-0.5" title="Copy Key" th:data-key="${key}" onclick="copyToClipboard(this.getAttribute('data-key'), this)">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </li>
+                    <li th:if="${#lists.isEmpty(redisKeys)}" class="text-slate-500 italic text-center py-4">Database is empty</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Kafka Terminal -->
+    <div class="lg:col-span-2">
+        <div class="bg-slate-800 rounded-xl shadow-xl border border-slate-700 p-5 h-full flex flex-col">
+
+            <div class="flex items-center space-x-3 mb-4 border-b border-slate-700 pb-3">
+                <i class="fas fa-stream text-orange-400 text-xl"></i>
+                <h2 class="text-lg font-semibold text-white">Apache Kafka (KRaft)</h2>
+                <div class="ml-auto flex items-center space-x-2">
+                    <span class="text-xs font-mono text-slate-400 bg-slate-900 px-2 py-1 rounded border border-slate-700" th:text="${kafkaAddress}" id="kafkaAddressText">localhost:9092</span>
+                    <button onclick="copyToClipboard(document.getElementById('kafkaAddressText').innerText, this)" class="text-slate-400 hover:text-white transition" title="Copy Kafka Address"><i class="far fa-copy"></i></button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Inspect Topic</label>
+                    <select id="topicSelector" onchange="startLiveTracking()" class="w-full bg-slate-900 border border-slate-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                        <option value="">-- Select a Topic --</option>
+                        <option th:each="topic : ${kafkaTopics}" th:value="${topic}" th:text="${topic}"></option>
+                    </select>
+                </div>
+
+                <div id="metadataContainer" class="hidden">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Partition Metadata</label>
+                    <div id="partitionInfo" class="bg-slate-900 border border-slate-700 rounded-lg p-2.5 font-mono text-sm text-blue-400 flex items-center">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Topic Creator -->
+            <div class="mb-4 border-t border-slate-700 pt-4">
+                <button onclick="document.getElementById('createTopicForm').classList.toggle('hidden')" class="text-xs bg-slate-700 hover:bg-slate-600 text-white py-1.5 px-3 rounded shadow transition">
+                    <i class="fas fa-plus mr-1"></i> Create Custom Topic
+                </button>
+
+                <div id="createTopicForm" class="hidden mt-3 bg-slate-900/50 p-3 rounded-lg border border-slate-700 shadow-inner">
+                    <div class="flex items-end space-x-2">
+                        <div class="w-1/3">
+                            <label class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Topic Name</label>
+                            <input type="text" id="newTopicName" placeholder="e.g. payment-events" class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded p-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="w-1/4">
+                            <label class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Partitions</label>
+                            <input type="number" id="newTopicPartitions" value="1" min="1" class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded p-2 focus:ring-blue-500 focus:border-blue-500" title="Number of Partitions">
+                        </div>
+                        <div class="w-1/4">
+                            <label class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Replicas</label>
+                            <input type="number" id="newTopicReplicas" value="1" min="1" class="w-full bg-slate-800 border border-slate-600 text-white text-sm rounded p-2 focus:ring-blue-500 focus:border-blue-500" title="Replication Factor">
+                        </div>
+                        <div class="w-1/4">
+                            <button onclick="submitNewTopic()" class="w-full bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded p-2 transition shadow">Create</button>
+                        </div>
+                    </div>
+                    <p id="createTopicStatus" class="text-xs mt-2 hidden font-mono"></p>
+                </div>
+            </div>
+
+            <!-- Live Terminal View -->
+            <div class="flex-grow flex flex-col mt-2">
+                <div class="bg-slate-900 rounded-t-lg border-t border-l border-r border-slate-700 p-2 flex items-center space-x-2">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span class="text-xs text-slate-500 font-mono ml-2">live-stream.sh</span>
+
+                    <div id="liveIndicator" class="ml-auto flex items-center space-x-2 hidden">
+                        <span class="text-xs text-emerald-500 font-mono uppercase tracking-widest animate-pulse">Polling</span>
+                    </div>
+                </div>
+
+                <div class="bg-[#0D1117] rounded-b-lg border border-slate-700 p-4 flex-grow relative overflow-hidden flex flex-col min-h-[300px]">
+                    <div id="terminalPlaceholder" class="text-slate-500 font-mono text-sm absolute inset-0 flex items-center justify-center">
+                        Select a topic to start live tracking...
+                    </div>
+
+                    <ul id="liveMessagesList" class="font-mono text-sm space-y-2 overflow-y-auto w-full z-10 hidden">
+                        <!-- Messages injected via JS -->
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // Copy to clipboard utility
+    function copyToClipboard(text, btnElement) {
+        navigator.clipboard.writeText(text).then(() => {
+            const icon = btnElement.querySelector('i');
+            const originalClass = icon.className;
+
+            // Show success checkmark
+            icon.className = 'fas fa-check text-emerald-400';
+
+            // Revert after 2 seconds
+            setTimeout(() => {
+                icon.className = originalClass;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
+    }
+
+    // Redis Key Search Filter
+    function filterRedisKeys() {
+        const input = document.getElementById('redisSearch');
+        const filter = input.value.toLowerCase();
+        const items = document.querySelectorAll('.redis-key-item');
+
+        items.forEach(item => {
+            const text = item.querySelector('.redis-key-text').innerText.toLowerCase();
+            if (text.includes(filter)) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    let trackingInterval;
+
+    function startLiveTracking() {
+        const topic = document.getElementById("topicSelector").value;
+        const terminalList = document.getElementById("liveMessagesList");
+        const placeholder = document.getElementById("terminalPlaceholder");
+        const metadataContainer = document.getElementById("metadataContainer");
+        const liveIndicator = document.getElementById("liveIndicator");
+
+        if (!topic) {
+            terminalList.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+            metadataContainer.classList.add('hidden');
+            liveIndicator.classList.add('hidden');
+            clearInterval(trackingInterval);
+            return;
+        }
+
+        terminalList.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+        metadataContainer.classList.remove('hidden');
+        liveIndicator.classList.remove('hidden');
+
+        fetchData(topic);
+        clearInterval(trackingInterval);
+        trackingInterval = setInterval(() => fetchData(topic), 2000);
+    }
+
+    async function fetchData(topic) {
+        try {
+            // Fetch Partitions
+            const detailsRes = await fetch(`/api/kafka/topic/${topic}/details`);
+            document.getElementById("partitionInfo").innerHTML = `<i class="fas fa-info-circle mr-2 text-slate-500"></i>` + await detailsRes.text();
+
+            // Fetch Messages
+            const msgsRes = await fetch(`/api/kafka/topic/${topic}/messages`);
+            const msgs = await msgsRes.json();
+
+            const list = document.getElementById("liveMessagesList");
+            list.innerHTML = "";
+
+            if (msgs.length === 0) {
+                list.innerHTML = `<li class="text-slate-500">Listening for new events on [${topic}]...</li>`;
+            } else {
+                msgs.forEach(msg => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `<span class="text-emerald-400">➜</span> <span class="text-slate-300 break-all">${msg}</span>`;
+                    li.className = "border-b border-slate-800/50 pb-1";
+                    list.appendChild(li);
+                });
+            }
+        } catch (error) {
+            console.error("Error fetching live data", error);
+        }
+    }
+
+    // New Topic Creation Logic
+    async function submitNewTopic() {
+        const name = document.getElementById('newTopicName').value;
+        const partitions = document.getElementById('newTopicPartitions').value;
+        const replicas = document.getElementById('newTopicReplicas').value;
+        const statusEl = document.getElementById('createTopicStatus');
+
+        if (!name) return;
+
+        try {
+            const formData = new URLSearchParams();
+            formData.append('topicName', name);
+            formData.append('partitions', partitions);
+            formData.append('replicas', replicas);
+
+            const response = await fetch('/api/kafka/topic', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.text();
+            statusEl.innerText = result;
+            statusEl.classList.remove('hidden');
+
+            if(result === 'Success') {
+                statusEl.className = 'text-xs mt-2 font-mono text-emerald-400';
+                // Reload the page after a brief delay to update the dropdown list
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                statusEl.className = 'text-xs mt-2 font-mono text-red-400';
+            }
+        } catch (e) {
+            statusEl.innerText = 'Network error creating topic';
+            statusEl.className = 'text-xs mt-2 font-mono text-red-400';
+            statusEl.classList.remove('hidden');
+        }
+    }
+</script>
+</body>
+</html>
