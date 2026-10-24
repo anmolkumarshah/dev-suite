@@ -15,7 +15,7 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import redis.embedded.RedisServer;
+import com.github.fppt.jedismock.RedisServer;
 import org.h2.tools.Server;
 
 import jakarta.annotation.PostConstruct;
@@ -23,6 +23,7 @@ import jakarta.annotation.PreDestroy;
 
 import javax.sql.DataSource;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,8 +47,8 @@ public class DevInfrastructureConfig {
                 .start();
         System.out.println("✅ Embedded PostgreSQL running on port 5432");
 
-        // 2. Start Redis on 6379
-        redisServer = new RedisServer(6379);
+        // 2. Start Redis on 6379 (Corrected syntax here)
+        redisServer = RedisServer.newRedisServer(6379);
         redisServer.start();
         System.out.println("✅ Embedded Redis running on port 6379");
 

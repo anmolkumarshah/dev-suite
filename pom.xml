@@ -20,6 +20,12 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
         <!-- Web & UI (Dashboard) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -66,11 +72,10 @@
             <version>2.2.2</version>
         </dependency>
 
-        <!-- Embedded Redis (Native binaries) -->
         <dependency>
-            <groupId>com.github.codemonstur</groupId>
-            <artifactId>embedded-redis</artifactId>
-            <version>1.4.4</version>
+            <groupId>com.github.fppt</groupId>
+            <artifactId>jedis-mock</artifactId>
+            <version>1.0.13</version>
         </dependency>
 
         <!-- Embedded Kafka (Official KRaft Broker) -->
